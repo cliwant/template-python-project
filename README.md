@@ -10,6 +10,7 @@
     - [프로젝트 기본 구조 잡기](#프로젝트-기본-구조-잡기)
     - [프로젝트 환경 설정하기 : 검증 자동화를 위한 패키지 설치](#프로젝트-환경-설정하기--검증-자동화를-위한-패키지-설치)
       - [1. Black](#1-black)
+      - [2. Ruff](#2-ruff)
 
 ## 시작하기 전, 작성목표
 
@@ -80,4 +81,14 @@
 ```sh
 pip install --upgrade black
 black main.py src tests
+```
+
+#### 2. Ruff
+
+- 목적 : 빠른 린팅 및 자동 수정
+- 참고 : https://pypi.org/project/ruff/
+
+```sh
+pip install --upgrade ruff
+ruff check --fix main.py src tests
 ```

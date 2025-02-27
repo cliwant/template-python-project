@@ -3,3 +3,11 @@ line-length = 88
 target-version = ['py313']
 skip-string-normalization = false
 skip-magic-trailing-comma = false
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+show-fixes = true
+unsafe-fixes = false
+lint.select = ["E", "F", "W", "I", "C90"]
+lint.ignore = ["E501"]
