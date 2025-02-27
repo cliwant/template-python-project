@@ -12,6 +12,7 @@
       - [1. Black](#1-black)
       - [2. Ruff](#2-ruff)
       - [3. Mypy](#3-mypy)
+      - [검증 스크립트로 통합](#검증-스크립트로-통합)
 
 ## 시작하기 전, 작성목표
 
@@ -102,4 +103,22 @@ ruff check --fix main.py src tests
 ```sh
 pip install --upgrade mypy
 mypy --strict main.py src tests
+```
+
+#### 검증 스크립트로 통합
+
+검증 편의를 위해서 위의 3개 검증 패키지를 순서대로 호출하는 스크립트를 작성해서 사용하면 편하다.
+
+```sh
+#!/bin/bash
+set -ex
+black main.py src tests
+ruff check --fix main.py src tests
+mypy --strict main.py src tests
+```
+
+사용할 때에는 실행이 가능하도록 파일 권한을 바꾸어주어야 한다.
+
+```sh
+chmod +x ./scripts/check.sh
 ```
