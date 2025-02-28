@@ -426,3 +426,8 @@ repos:
         entry: ./scripts/test.sh
         language: script
 ```
+
+> 주의사항
+> 
+> pre-commit 을 적용하면 IDE 를 통한 commit script 가 제대로 안 동작 할 수 있다(확인중).
+> 확실한건 CLI 를 통했을 때에는 잘 동작한다는 것이다.
