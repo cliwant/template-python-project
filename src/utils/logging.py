@@ -4,7 +4,7 @@ import os
 import colorlog
 
 
-def get_logger(name: str = __name__, level: int = logging.INFO) -> logging.Logger:
+def get_logger(name: str = __name__, level: str | int = logging.INFO) -> logging.Logger:
     # Define log format
     log_format = "%(asctime)s.%(msecs)03d %(log_color)s%(levelname)-8s%(reset)s %(process)5d --- [%(cyan)s%(threadName)-12s%(reset)s] %(bold_purple)s%(full_path)30s:%(lineno)-4d%(reset)s >> %(bold_blue)s%(funcName)20s%(reset)s : %(message)s"
 

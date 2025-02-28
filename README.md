@@ -17,6 +17,7 @@
   - [개발시 지속적으로 품질을 관리하자](#개발시-지속적으로-품질을-관리하자)
     - [1. Watchdog(Watchmedo)](#1-watchdogwatchmedo)
     - [2. Logging](#2-logging)
+    - [3. Dynamic environment by profile](#3-dynamic-environment-by-profile)
 
 ## 시작하기 전, 작성목표
 
@@ -212,13 +213,37 @@ chmod +x ./scripts/start.sh
 
 ### 2. Logging
 
-로깅시 적절한 로거를 사용하는 것 또한 매우 중요한 부분이다. 내장함수인 `print()` 를 사용하는 것 보다는 `logging.Logger` 를 사용하게 되면 다양한 hander 로 로깅을 할 수 있고, 환경에 따른 로그 레벨도 분리 할 수 있다. 본 template 에서는 console logger 설정만 했으며, 다음과 같은 부분을 신경 쓰도록 했다.
+로깅시 적절한 로거를 사용하는 것 또한 매우 중요한 부분이다. 내장함수인 `print()` 를 사용하는 것 보다는 `logging.Logger` 를 사용하게 되면 다양한 hander 로 로깅을 할 수 있고, 환경에 따른 로그 레벨도 분리 할 수 있다. 본 template 에서는 console logger 설정만 했으며, 아래의 사항들을 고려하였다.
 
 1. 필요한 정보(시간, 레벨, 위치, 메세지)가 한번에 정해진 규칙으로 보일것
 2. 정보들을 한눈에 볼수 있게, 종류별로 잘 정렬이 되어있을 것
 3. 주요 포인트에 색깔로 강조를 할 것
 
-> 추가로 설치한 패키지
+> 추가된 패키지
 > - [colorlog](https://pypi.org/project/colorlog/) : 로그 포멧에 색을 입히기 위함
+>
+> 참고 예제 파일
+> - [src/utils/loggin.py](src/utils/logging.py)
 
- 
+### 3. Dynamic environment by profile
+
+개발을 진행하다 보면 상황에 따라서 다양한 설정값을 사용해야하고, 이를 위해서 여러 세트의 설정 파일을 가지게 된다. 보통 `profile` 또는 `phase` 라는 이름으로 환경을 구분 하는데(여기서는 `profile`을 사용한다), 이에 따라 동적으로 설정값을 변경 하는 것을 제안한다. 보통 이를 위해 `python-dotenv`를 많이 사용하는데, 내부적으로 이를 사용하는 `pydantic` 중의 `pydantic-settings`을 사용하는 방법을 제안한다. 제안하는 방법은 아래의 사항들을 고려하였다.
+
+1. 실행에 필요한 설정들을 `profile`에 따라 다른 파일로 나눈다. 구분하는 형식은, 기본 환경변수인 `.env`를 두고 `profile`에 따라 접미사를 붙인다(예시: `test profile` 인 경우 `.env.test`). Profile 은 환경변수로 전달하되(`PROFILE`를 `key`로 사용), 설정을 찾지 못하거나 환경변수를 찾지 못하는 경우 기본값(`.env`)을 사용한다.
+
+```sh
+export PROFILE=test 
+```
+
+2. 편의성을 위하여 `start` 스크립트에 인자로 `profile`을 넣을 수 있도록 수정하였다.
+
+```sh
+./scripts/start.sh test
+```
+
+3. 로그 레벨을 환경변수로 설정 할 수 있도록 수정하였다.
+
+_.env.test_
+```sh
+app.log.level=DEBUG
+```

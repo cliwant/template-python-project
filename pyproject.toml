@@ -10,7 +10,7 @@ target-version = "py313"
 show-fixes = true
 unsafe-fixes = false
 lint.select = ["D", "E", "F", "W", "I", "C90"]
-lint.ignore = ["D100", "D101", "D102", "D103", "D104", "D107", "D203", "D212", "E501"]
+lint.ignore = ["D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", "D203", "D212", "E501"]
 
 [tool.mypy]
 python_version = "3.13"
