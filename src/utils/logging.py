@@ -20,7 +20,9 @@ def get_logger(name: str = __name__, level: int = logging.INFO) -> logging.Logge
     # Create console handler and set level and format
     console_handler = logging.StreamHandler()
     console_handler.setLevel(level)
-    console_handler.setFormatter(_CustomFormatter(log_format, log_colors=log_colors))
+    console_handler.setFormatter(
+        _CustomFormatter(log_format, log_colors=log_colors, datefmt="%Y-%m-%d %H:%M:%S")
+    )
 
     # Set level and handler
     logger = logging.getLogger(name)
