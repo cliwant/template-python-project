@@ -20,6 +20,7 @@
     - [3. Dynamic environment by profile](#3-dynamic-environment-by-profile)
   - [코드 커밋시 테스트를 수행하자](#코드-커밋시-테스트를-수행하자)
     - [1. Pylint](#1-pylint)
+    - [2. Pytest](#2-pytest)
 
 ## 시작하기 전, 작성목표
 
@@ -268,4 +269,14 @@ app.log.level=DEBUG
 ```sh
 pip install --upgrade pylint
 pylint main.py src tests
+```
+
+### 2. Pytest
+
+- 목적 : 테스트코드 실행 (unittest 대체)
+- 참고 : https://pypi.org/project/pytest/
+
+```sh
+pip install --upgrade pytest
+pytest tests
 ```
