@@ -1,9 +1,8 @@
-import src.utils.logging as logging
 from src.settings import AppSettings
+from src.utils import logging
 
 
 class App:
-
     def __init__(self) -> None:
         self.settings = AppSettings()
         self.logger = logging.get_logger(level=self.settings.log_level)

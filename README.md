@@ -18,6 +18,8 @@
     - [1. Watchdog(Watchmedo)](#1-watchdogwatchmedo)
     - [2. Logging](#2-logging)
     - [3. Dynamic environment by profile](#3-dynamic-environment-by-profile)
+  - [코드 커밋시 테스트를 수행하자](#코드-커밋시-테스트를-수행하자)
+    - [1. Pylint](#1-pylint)
 
 ## 시작하기 전, 작성목표
 
@@ -219,11 +221,10 @@ chmod +x ./scripts/start.sh
 2. 정보들을 한눈에 볼수 있게, 종류별로 잘 정렬이 되어있을 것
 3. 주요 포인트에 색깔로 강조를 할 것
 
-> 추가된 패키지
-> - [colorlog](https://pypi.org/project/colorlog/) : 로그 포멧에 색을 입히기 위함
->
-> 참고 예제 파일
-> - [src/utils/loggin.py](src/utils/logging.py)
+> colorlog
+> - 목적 : 로그 포멧에 색을 입히기 위함
+> - 참고 : https://pypi.org/project/colorlog/
+> - 예제 : [src/utils/loggin.py](src/utils/logging.py)
 
 ### 3. Dynamic environment by profile
 
@@ -246,4 +247,25 @@ export PROFILE=test
 _.env.test_
 ```sh
 app.log.level=DEBUG
+```
+
+> pydantic-settings
+> - 목적 : 설
+> - 참고 : https://pypi.org/project/pydantic-settings/
+> - 예제 : [src/settings.py](src/settings.py)
+
+## 코드 커밋시 테스트를 수행하자
+
+`git` 에서는 코드를 `commit` 한다는 것은 곧 push 를 한다는 것이고, `push`를 한다는 것은 다른 사람과 코드를 공유 하겠다는 것이다. 물론 `CI/CD`와 `PR` 및 `Code Review` 과정에서 어느 정도는 검사가 되겠지만, 최대한 로컬에서 테스트를 수행하고 올리는 것이 낫다. 그런데 개발자가 일일이 `분석 및 테스트`를 수행하게 되면 사람에 따라 빈도와 수준이 편차가 생기게 된다. 그렇기 때문에 이를 특정 `프로세스로 만들어 자동화` 해야 한다고 생각한다.
+
+그럼 `commit` 과 `push` 중 언제 자동화 테스트를 수행해야 할까? 여기서는 개인적인 성향을 반영하여 `commit 시 적용하는 것을 기본으로` 하겠다. 최대한 조금씩 자주 하는게 일관된 `개발 템포`를 가져가고 `코드 작성시 안정감`을 줄 수 있다고 생각하기 때문이다. 단, 테스트 커버리지는 설정하지 않겠다. TDD로 하는게 아니라면, 테스트를 작성하는것이 너무 괴롭기 때문이다...
+
+### 1. Pylint
+
+- 목적 : 좀 더 자세한 린팅 (코드 품질 분석)
+- 참고 : https://pypi.org/project/pylint/
+
+```sh
+pip install --upgrade pylint
+pylint main.py src tests
 ```
