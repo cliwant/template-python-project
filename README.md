@@ -45,10 +45,9 @@
     pip install --upgrade pip
     ```
 - `.gitignore`는 알아서 잘 작성 하도록 한다. 특히 `IDE 설정`과도 같은 개인화된 파일은 꼭 빼주도록 한다.
-- 의존성은 알아서 주기적으로 정리해준다. 특별한 사유가 없으면 소스 기반으로 최소한의 의존성만 넣도록 한다. 버전이 중요하지 않다면 아래의 예시로 일괄 적용하는 것도 생각해보자.
+- 의존성은 알아서 주기적으로 정리해준다. 불필요한 패키지는 삭제하고 아래 명령을 수행해주면 된다.
     ```sh
-    pip install --upgrade pipreqs
-    pipreqs --force .
+    pip list --format=freeze > requirements.txt
     ```
 
 ## 개발하기 위한 사전준비
@@ -79,7 +78,6 @@
 ```sh
 virtualenv venv --python=python3.13
 source venv/bin/activate
-pip install --upgrade pip black ruff mypy pylint pytest 'watchdog[watchmedo]'
 pip install --requirement requirements.txt
 ```
 
@@ -94,7 +92,6 @@ set -ex
 virtualenv venv --python=python3.13
 source venv/bin/activate
 
-pip install --upgrade pip black ruff mypy pylint pytest 'watchdog[watchmedo]'
 pip install --requirement requirements.txt
 ```
 
