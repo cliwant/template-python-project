@@ -1,4 +1,6 @@
 #!/bin/bash
 
-set -e
-echo
+set -ex
+
+pylint main.py src tests
+pytest tests

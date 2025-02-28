@@ -21,6 +21,7 @@
   - [코드 커밋시 테스트를 수행하자](#코드-커밋시-테스트를-수행하자)
     - [1. Pylint](#1-pylint)
     - [2. Pytest](#2-pytest)
+    - [Pre-Commit 로 자동화](#pre-commit-로-자동화)
 
 ## 시작하기 전, 작성목표
 
@@ -88,7 +89,7 @@ pip install --requirement requirements.txt
 
 설치 편의를 위해 파이썬 환경 설정 및 패키지 설치 과정을 스크립트로 만들어 사용할 수 있다.
 
-_./scripts/setup.sh_
+_[./scripts/setup.sh](./scripts/setup.sh)_
 ```sh
 #!/bin/bash
 
@@ -122,6 +123,16 @@ pip install --upgrade black
 black main.py src tests
 ```
 
+[pyproject.toml](pyproject.toml) 에 관련 설정을 넣는다.
+
+```toml
+[tool.black]
+line-length = 88
+target-version = ['py313']
+skip-string-normalization = false
+skip-magic-trailing-comma = false
+```
+
 #### 2. Ruff
 
 - 목적 : 빠른 린팅 및 자동 수정
@@ -130,6 +141,45 @@ black main.py src tests
 ```sh
 pip install --upgrade ruff
 ruff check --fix main.py src tests
+```
+
+[pyproject.toml](pyproject.toml) 에 관련 설정을 넣는다.
+
+```toml
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+show-fixes = true
+unsafe-fixes = false
+lint.select = [
+    "B",    # bugbear
+    "D",    # pydocstyle
+    "E",    # pycodestyle
+    "F",    # Pyflakes
+    "W",    # pycodestyle
+    "I",    # isort
+    "RUF",  # ruff
+    "UP",   # pyupgrade
+    "C90",  # mccabe
+]
+lint.ignore = [
+    "B905",     # `zip()` without an explicit `strict=` parameter
+    "D100",     # Missing docstring in public module
+    "D101",     # Missing docstring in public class
+    "D102",     # Missing docstring in public method
+    "D103",     # Missing docstring in public function
+    "D104",     # Missing docstring in public package
+    "D105",     # Missing docstring in magic method
+    "D106",     # Missing docstring in public nested class
+    "D107",     # Missing docstring in __init__
+    "D203",     # 1 blank line required before class docstring
+    "D205",     # 1 blank line required between summary line and description
+    "D212",     # Multi-line docstring summary should start at the second line
+    "D400",     # First line should end with a period
+    "D401",     # First line of docstring should be in imperative mood
+    "E501",     # Line too long ({width} > {limit})
+    "RUF012",   # mutable default values in class attributes
+]
 ```
 
 #### 3. Mypy
@@ -142,11 +192,21 @@ pip install --upgrade mypy
 mypy --strict main.py src tests
 ```
 
+[pyproject.toml](pyproject.toml) 에 관련 설정을 넣는다.
+
+```toml
+[tool.mypy]
+python_version = "3.13"
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_configs = true
+```
+
 #### 검증 스크립트로 통합
 
 검증 편의를 위해서 위의 3개 검증 패키지를 순서대로 호출하는 스크립트를 작성해서 사용할 수 있다.
 
-_./scripts/check.sh_
+_[./scripts/check.sh](./scripts/check.sh)_
 ```sh
 #!/bin/bash
 
@@ -192,7 +252,7 @@ watchmedo shell-command \
 이를 실행시키면 아무 일도 일어나지 않는데, `*.py` 형식의 코드를 수정하고 저장하게 되면 이를 자동으로 감지해서 `check.sh` 스크립트와 `main.py` 가 실행된다.
 이 또한 스크립트로 만들어서 편하고 직관적으로 관리할 수 있다.
 
-_./scripts/start.sh_
+_[./scripts/start.sh](./scripts/start.sh)_
 ```sh
 #!/bin/bash
 
@@ -271,6 +331,43 @@ pip install --upgrade pylint
 pylint main.py src tests
 ```
 
+[pyproject.toml](pyproject.toml) 에 관련 설정을 넣는다.
+
+```toml
+[tool.pylint.messages_control]
+disable = [
+    "C0114",  # 모듈 docstring 없음 경고 무시
+    "C0115",  # 클래스 docstring 없음 경고 무시
+    "C0116",  # 함수 docstring 없음 경고 무시
+    "C0301",  # line 이 너무 김
+    "R0903",  # 너무 적은 public 메서드 경고 무시
+]
+enable = [
+    "E",  # Error
+    "W",  # Warning
+    "R",  # Refactoring
+]
+
+[tool.pylint.format]
+max-line-length = 88  # 최대 줄 길이
+indent-string = "    "  # 4칸 공백 사용
+
+[tool.pylint.design]
+max-args = 5  # 함수의 최대 인자 개수
+max-attributes = 10  # 클래스의 최대 속성 개수
+max-locals = 15  # 지역 변수 개수 제한
+max-returns = 6  # 함수에서 `return` 개수 제한
+max-statements = 50  # 함수 내 최대 코드 줄 수 제한
+min-public-methods = 0 # class 내의 public method 숫자가 무시. R0903 제외가 안먹어서 1로 줄임
+
+[tool.pylint.similarities]
+min-similarity-lines = 10  # 중복 코드 감지 기준 (10줄 이상)
+ignore-comments = true  # 주석 제외
+
+[tool.pylint.reports]
+output-format = "colorized"  # 색상이 있는 출력 사용
+```
+
 ### 2. Pytest
 
 - 목적 : 테스트코드 실행 (unittest 대체)
@@ -279,4 +376,53 @@ pylint main.py src tests
 ```sh
 pip install --upgrade pytest
 pytest tests
+```
+
+### Pre-Commit 로 자동화
+
+- 목적 : git commit 이전에 `검증/분석/테스트`를 수행하려고
+- 참고 : https://pypi.org/project/pre-commit/
+
+```sh
+pip install --upgrade pre-commit
+pre-commit install
+
+# (Optional) 수동 테스트 용도
+pre-commit run --all-files
+```
+
+위에서 만든 check.sh 와 pylint, pytest 가 정상 동작 하게 하기 위해서, pylint+pytest 를 스크립트로 만들었다.
+
+_[./scripts/test.sh](./scripts/test.sh)_
+```sh
+#!/bin/bash
+
+set -ex
+
+pylint main.py src tests
+pytest tests
+```
+
+사용할 때에는 실행이 가능하도록 파일 권한을 바꾸어주어야 한다.
+
+```sh
+chmod +x ./scripts/test.sh
+./scripts/test.sh
+```
+
+pre-commit이 원하는 대로 동작하기 위해서는 설정 파일을 프로젝트에 추가해주어야 한다.
+
+_[.pre-commit-config.yaml](.pre-commit-config.yaml)_
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: check
+        name: Check code quality
+        entry: ./scripts/check.sh
+        language: script
+      - id: test
+        name: Analyze and test code
+        entry: ./scripts/test.sh
+        language: script
 ```
