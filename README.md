@@ -8,7 +8,8 @@
   - [계속하기 전, 참고사항](#계속하기-전-참고사항)
   - [이어서 계속하기](#이어서-계속하기)
     - [프로젝트 기본 구조 잡기](#프로젝트-기본-구조-잡기)
-    - [프로젝트 환경 설정하기 : 검증 자동화를 위한 패키지 설치](#프로젝트-환경-설정하기--검증-자동화를-위한-패키지-설치)
+    - [프로젝트 환경 설정하기 : 파이썬 및 요구 패키지 설치](#프로젝트-환경-설정하기--파이썬-및-요구-패키지-설치)
+    - [검증 자동화를 위한 패키지 적용](#검증-자동화를-위한-패키지-적용)
       - [1. Black](#1-black)
       - [2. Ruff](#2-ruff)
       - [3. Mypy](#3-mypy)
@@ -70,7 +71,43 @@
   - `README.md`         - 프로젝트 문서화를 위한 기본 파일
   - `requirements.txt`  - 프로젝트 패키지 의존성 관리를 위한 파일
 
-### 프로젝트 환경 설정하기 : 검증 자동화를 위한 패키지 설치
+### 프로젝트 환경 설정하기 : 파이썬 및 요구 패키지 설치
+
+> 파이썬의 버전 호환성을 위한 가상환경을 설치하고, 필요한 패키지를 설치하는 과정.
+
+```sh
+virtualenv venv --python=python3.13
+source venv/bin/activate
+pip install --upgrade pip black ruff mypy pylint pytest 'watchdog[watchmedo]'
+pip install --requirement requirements.txt
+```
+
+설치 편의를 위해 파이썬 환경 설정 및 패키지 설치 과정을 스크립트로 만들어 사용할 수 있다.
+
+_./scripts/setup.sh_
+```sh
+#!/bin/bash
+
+set -ex
+
+virtualenv venv --python=python3.13
+source venv/bin/activate
+
+pip install --upgrade pip black ruff mypy pylint pytest 'watchdog[watchmedo]'
+pip install --requirement requirements.txt
+```
+
+사용할 때에는 실행이 가능하도록 파일 권한을 바꾸어주어야 한다. 또한, `source venv/bin/activate` 가 격리된 프로세스에서 실행 되었기 때문에 스크립트로 설치혀면 `activate`는 따로 한번 더 실행 해주어야 한다. (새로운 세션을 열면 잊지 말고 수행할 것)
+
+```sh
+chmod +x ./scripts/setup.sh
+./scripts/setup.sh
+source venv/bin/activate
+```
+
+### 검증 자동화를 위한 패키지 적용
+
+> 코드 스타일, 표준 준수, 정작 타이핑을 위한 패키기 적용 방법. `프로젝트 환경 설정하기`를 진행했다면 설치 과정은 생략해도 된다.
 
 #### 1. Black
 
@@ -104,11 +141,14 @@ mypy --strict main.py src tests
 
 #### 검증 스크립트로 통합
 
-검증 편의를 위해서 위의 3개 검증 패키지를 순서대로 호출하는 스크립트를 작성해서 사용하면 편하다.
+검증 편의를 위해서 위의 3개 검증 패키지를 순서대로 호출하는 스크립트를 작성해서 사용할 수 있다.
 
+_./scripts/check.sh_
 ```sh
 #!/bin/bash
+
 set -ex
+
 black main.py src tests
 ruff check --fix main.py src tests
 mypy --strict main.py src tests
@@ -118,4 +158,5 @@ mypy --strict main.py src tests
 
 ```sh
 chmod +x ./scripts/check.sh
+./scripts/check.sh
 ```
