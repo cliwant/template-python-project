@@ -14,6 +14,8 @@
       - [2. Ruff](#2-ruff)
       - [3. Mypy](#3-mypy)
       - [검증 스크립트로 통합](#검증-스크립트로-통합)
+  - [개발시 지속적으로 품질을 관리하자](#개발시-지속적으로-품질을-관리하자)
+    - [1. Watchdog(Watchmedo)](#1-watchdogwatchmedo)
 
 ## 시작하기 전, 작성목표
 
@@ -58,7 +60,6 @@
     - `setup.sh`            - 프로젝트 초기 셋업을 위한 설정 및 패키지 다운로드 스크립트
     - `check.sh`            - 지속적 품질 검사를 수행하기 위한 스크립트
     - `start.sh`            - 프로그램 실행을 위한 스크립트
-    - `watch.sh`            - 프로젝트 변경을 감지하여 피드백을 주기 위한 스크립트
     - `test.sh`             - analyze & test 관련 스크립트
     - `deploy.sh`           - build & deploy 관련 스크립트
   - `src/`              - main.py 를 제외한 실제 프로그램 코드가 존재하는 폴더
@@ -159,4 +160,52 @@ mypy --strict main.py src tests
 ```sh
 chmod +x ./scripts/check.sh
 ./scripts/check.sh
+```
+
+## 개발시 지속적으로 품질을 관리하자
+
+`지속적인 품질 관리`는 서비스 전체의 품질에 큰 영향을 미친다. 또한 동일 조직간의 품질 관리 방향성을 동일하게 하는 것 또한 향후 `유지보수`를 용이하게 만든다. 
+
+보통 `IDE`에 통합된 `lint` 등을 사용하여 확인할 수가 있는데, `error`가 아닌 `warning` 정도는 무시하고 개발을 하거나(필자는 왜 노란줄과 경거 메세지가 뜨는데 그걸 굳이 무시하는지 이해가 가지 않는다..), 관련 표시 설정을 `disable` 하는 사람들이 많다.
+
+또 하나의 방법으로 이를 위해서 `품질 관리 패키지`를 사용하고 이를 위한 `설정을 공유`하는 방법을 많이 사용하는데, 그럼에도 불구하고 잘 지켜지지 않는 경우들이 많다. 그러다보면 `CI/CD` 과정에 품질관리 및 테스트 과정에서 테스트를 통과하지 못하여, 한번에 몰아서 고치거나 테스트는 빼고 품질 검증은 skip 하는 식으로 처리되어 결국 점점 `기술부채`가 쌓여간다.
+
+그래서 제안하는 방법은, 매번 파일의 변경이 일어날 때마다 품질검증을 다시하고 성공시 프로그램을 재기동 하고 실패시 종료시키도록 하는 것이다. 이를 위해 `watchdog` 패키지 내의 `watchmedo`를 사용하려 한다.
+
+### 1. Watchdog(Watchmedo)
+
+- 목적 : 파일 변경 감지를 통한 자동화 가능
+- 참고 : https://pypi.org/project/watchdog/
+
+```sh
+pip install --upgrade 'watchdog[watchmedo]'
+watchmedo shell-command \
+    --patterns="*.py" \
+    --recursive \
+    --command="./scripts/check.sh && python main.py" \
+    .
+```
+
+이를 실행시키면 아무 일도 일어나지 않는데, `*.py` 형식의 코드를 수정하고 저장하게 되면 이를 자동으로 감지해서 `check.sh` 스크립트와 `main.py` 가 실행된다.
+이 또한 스크립트로 만들어서 편하고 직관적으로 관리할 수 있다.
+
+_./scripts/start.sh_
+```sh
+#!/bin/bash
+
+set -ex
+
+./scripts/check.sh
+watchmedo shell-command \
+    --patterns="*.py" \
+    --recursive \
+    --command="./scripts/check.sh && python main.py" \
+    .
+```
+
+사용할 때에는 실행이 가능하도록 파일 권한을 바꾸어주어야 한다.
+
+```sh
+chmod +x ./scripts/start.sh
+./scripts/start.sh
 ```
