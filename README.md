@@ -16,6 +16,7 @@
       - [검증 스크립트로 통합](#검증-스크립트로-통합)
   - [개발시 지속적으로 품질을 관리하자](#개발시-지속적으로-품질을-관리하자)
     - [1. Watchdog(Watchmedo)](#1-watchdogwatchmedo)
+    - [2. Logging](#2-logging)
 
 ## 시작하기 전, 작성목표
 
@@ -208,3 +209,16 @@ watchmedo shell-command \
 chmod +x ./scripts/start.sh
 ./scripts/start.sh
 ```
+
+### 2. Logging
+
+로깅시 적절한 로거를 사용하는 것 또한 매우 중요한 부분이다. 내장함수인 `print()` 를 사용하는 것 보다는 `logging.Logger` 를 사용하게 되면 다양한 hander 로 로깅을 할 수 있고, 환경에 따른 로그 레벨도 분리 할 수 있다. 본 template 에서는 console logger 설정만 했으며, 다음과 같은 부분을 신경 쓰도록 했다.
+
+1. 필요한 정보(시간, 레벨, 위치, 메세지)가 한번에 정해진 규칙으로 보일것
+2. 정보들을 한눈에 볼수 있게, 종류별로 잘 정렬이 되어있을 것
+3. 주요 포인트에 색깔로 강조를 할 것
+
+> 추가로 설치한 패키지
+> - [colorlog](https://pypi.org/project/colorlog/) : 로그 포멧에 색을 입히기 위함
+
+ 
