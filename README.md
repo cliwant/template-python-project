@@ -1,8 +1,8 @@
-# Python API Template by LonelyWolf
-본 `repository`는 Python 에서 `API Server`를 구축하는 예제를 토대로 `setup/develop/test/deploy/observabillity` `template`을 가이드의 형태로 기록하기 위해 생성하였다.
+# Python Project Template by LonelyWolf
+본 `repository`는 `Python Project`를 구축하rl 위한 초기 설정에 대해 `setup/develop/test/deploy/observabillity` 관점에서 `template`을 가이드의 형태로 기록하기 위해 생성하였다.
 
 ## 목차
-- [Python API Template by LonelyWolf](#python-api-template-by-lonelywolf)
+- [Python Project Template by LonelyWolf](#python-project-template-by-lonelywolf)
   - [목차](#목차)
   - [시작하기 전, 작성목표](#시작하기-전-작성목표)
   - [계속하기 전, 참고사항](#계속하기-전-참고사항)
@@ -29,8 +29,6 @@
 
 이런 고민들은 개발의 템포를 떨어뜨리고, 비즈니스 로직에 집중할 수 없게 하는 주된 원인이 되기 때문에 대안이 필요하다. 그래서 기술이 선택되면 확정되는 것들(deploy, observabillity)을 미리 정형화여 작성하고, 개발 하는 동안에 계속 고민을 해야하는 부분(conventions, environment, test)은 개발하는 동안 지속적으로 확인할 수 있는 구성을 설정하여 자동으로 확인할 수 있도록 한다.
 
-본 가이드의 말미에 `API Server` 서버의 구축과 이를 `Docker`를 사용하여 확장성 있게 배포하기 위한 간단한 가이드를 제시한다.
-
 ## 계속하기 전, 참고사항
 
 - 현재 가이드는 `Python 3.13` 버전을 기반으로 `macOS` 에서 작성 되었다. 본 가이드 내용을 토대로 각자 환경에 맞게 구성해야 한다.
@@ -49,7 +47,6 @@
     pip install --upgrade pipreqs
     pipreqs --force .
     ```
-- `API Server`는 `FastAPI` 를 사용하여 구축할 예정이다.
 
 ## 이어서 계속하기
 
