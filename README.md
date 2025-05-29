@@ -1,5 +1,5 @@
-# Python Project Template by LonelyWolf
-본 `repository`는 `Python Project`를 구축하rl 위한 초기 설정에 대해 `setup/develop/test/deploy/observabillity` 관점에서 `template`을 가이드의 형태로 기록하기 위해 생성하였다.
+# Python Project Template
+본 `repository`는 `Python Project`를 구축하기 위한 초기 설정에 대해 `setup/develop/test/deploy/observabillity` 관점에서 `template`을 가이드의 형태로 기록하기 위해 생성하였다.
 
 ## 목차
 - [Python Project Template by LonelyWolf](#python-project-template-by-lonelywolf)
